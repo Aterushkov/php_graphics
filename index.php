@@ -1,23 +1,26 @@
 <?
-header('Content-type:image/png');
 
 
 function setTextToImg($pic,$text){
-
+  
   $image_t = imagecreatefromjpeg('img\\'.$pic);
-  // $bg = imagecolorallocate($image_t,0,100,200);
+
   $textColor = imagecolorallocate($image_t,255,255,255);
-  imagestring($image_t,10, 200, 50, $text, $textColor);
+  $font = "fonts/arials.ttf";
+  imagettftext($image_t,10,0,200,50,$textColor,$font,$text);
   
   return $image_t;
 }
 
+$img1 = setTextToImg('ekb.jpg','Привет');
 
-$img1 = setTextToImg('ekb.jpg','Welcome');
+header('Content-Type: image/png');
+imagepng($img1);
+
 
 
 // imagepng($image_t, 'hello.png');
-imagepng($img1);
+
 // imagedestroy($image_t);
 
 
