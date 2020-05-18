@@ -1,12 +1,22 @@
 <?
   require_once "Db.php";
-   $db = DataBase::getDB();
-      $name = $db->escape($_POST['name_']);
-      $pic= $db->escape($_POST['pik_link']);
-      $text = $db->escape($_POST['out_text']);
-      $link = $db->escape($_POST['link']);
-      $query_article = "SELECT * FROM graph";
-      $article = $db->select($query_article);
+      $db = DataBase::getDB();
+      $ids = $db->escape($_GET['id']);
+     
+     
+      if(isset($_POST['DelOk'])){
+        $ids = $db->escape($_POST['rec_id']);
+        $query_send = "DELETE FROM graph WHERE id = '{$ids}'";
+        $db->query($query_send);
+        echo "Вы успешно удалили файл";
+        echo "<br/>";
+        echo "Хотите <a href='/'>венуться</a> к списку?";
+        
+      }
+      if(isset($_POST['cancel'])){
+        header('Location: /');
+      }
+      
   ?>
 
 <!DOCTYPE html>
@@ -52,32 +62,14 @@
     <div class="main ">
       <div class="container " id="about"> 
         <div class="shadow-sm">
-        <table class="table" border="1">
-            <thead>
-              <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Низвание</th>
-                <th scope="col">Текст</th>
-                <th scope="col">Ссылка</th>
-                <th scope="col">Фон</th>
-                <th scope="col">*</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?foreach($article as $for):?>
-              <tr>
-                <th scope="row"><?=$for['id']?></th>
-                <td><?=$for['name']?></td>
-                <td><?=$for['out_text']?></td>
-                <td > <img style="max-height:200px; max-width: 300px;" src="img/<?=$for['pic_link']?>" alt=""></td>
-                <td > <img style="max-height:200px; max-width: 300px;" src="img/<?=$for['link']?>" alt=""></td>
-                <td><a>Ред</a><a href="del.php?id=<?=$for['id']?>"> Удалить</a></td>
-              </tr>
-              <?endforeach?>
-            </tbody>
-          </table>
+          <form name="edit_image" action="del.php" method="POST">
+            <input type="hidden" name="rec_id" value="<?=$ids?>">
+            <button type="submit" name="DelOk" class="btn btn-primary my-4">Удалить</button>
+            <button type="submit" name="cancel"  class="btn btn-primary my-4">Отмена</button>
+          </form>
         </div>
       </div>
     </div>
   </body>
 </html>
+

@@ -1,18 +1,24 @@
-<?
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <?
   require_once "Db.php";
    $db = DataBase::getDB();
+    if(isset($_POST['name_'])){
       $name = $db->escape($_POST['name_']);
       $pic= $db->escape($_POST['pik_link']);
       $text = $db->escape($_POST['out_text']);
       $link = $db->escape($_POST['link']);
-      $query_article = "SELECT * FROM graph";
-      $article = $db->select($query_article);
+      $query_send = "INSERT INTO graph (name,pic_link,out_text,link) VALUES ('$name','$pic','$text','$link')";
+      if($db->query($query_send)){
+        echo "Запись добавлена";
+      }else{
+        echo "Ошибка: ";
+      }
+     
+    }
   ?>
-
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-<meta charset="UTF-8">
+	<meta charset="UTF-8">
   <title>Делаем открытки </title>
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700&amp;subset=cyrillic-ext" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -48,34 +54,39 @@
     </div>
   </div>
 </header>
-<body class="first-color">
+  <body class="first-color">
     <div class="main ">
       <div class="container " id="about"> 
         <div class="shadow-sm">
-        <table class="table" border="1">
-            <thead>
-              <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Низвание</th>
-                <th scope="col">Текст</th>
-                <th scope="col">Ссылка</th>
-                <th scope="col">Фон</th>
-                <th scope="col">*</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?foreach($article as $for):?>
-              <tr>
-                <th scope="row"><?=$for['id']?></th>
-                <td><?=$for['name']?></td>
-                <td><?=$for['out_text']?></td>
-                <td > <img style="max-height:200px; max-width: 300px;" src="img/<?=$for['pic_link']?>" alt=""></td>
-                <td > <img style="max-height:200px; max-width: 300px;" src="img/<?=$for['link']?>" alt=""></td>
-                <td><a>Ред</a><a href="del.php?id=<?=$for['id']?>"> Удалить</a></td>
-              </tr>
-              <?endforeach?>
-            </tbody>
-          </table>
+          <form name="edit_image" action="edit.php" method="POST">
+            <div class="form-group">
+              <label for="exampleInputEmail1">Имя записи</label>
+              <input type="text" name="name_" class="form-control"  aria-describedby="emailHelp">
+              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Текст</label>
+              <input type="text" name="out_text" class="form-control"  aria-describedby="emailHelp">
+              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Ссылка</label>
+              <input type="text" name="link" class="form-control"  aria-describedby="emailHelp">
+              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+              <?
+                $imagedirectory = array_diff( scandir($_SERVER['DOCUMENT_ROOT'] . '/img/' ), array('.','..'));
+              ?>
+              <label for="exampleFormControlSelect2">Example multiple select</label>
+              <select multiple class="form-control" name="pik_link">
+                <?foreach ($imagedirectory as $img):?>
+                <option value="<?=$img?>"><?=$img?></option>
+                 <?endforeach?>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary my-4">Submit</button>
+          </form>
         </div>
       </div>
     </div>
