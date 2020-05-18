@@ -52,6 +52,10 @@
     <div class="main ">
       <div class="container " id="about"> 
         <div class="shadow-sm">
+          <form name="creat_image" action="edit.php" method="GET">
+              <input type="hidden" name="id" value="-1">
+            <button type="submit" class="btn btn-primary my-4">Submit</button>
+          </form>
         <table class="table" border="1">
             <thead>
               <tr>
@@ -71,7 +75,7 @@
                 <td><?=$for['out_text']?></td>
                 <td > <img style="max-height:200px; max-width: 300px;" src="img/<?=$for['pic_link']?>" alt=""></td>
                 <td > <img style="max-height:200px; max-width: 300px;" src="img/<?=$for['link']?>" alt=""></td>
-                <td><a>Ред</a><a href="del.php?id=<?=$for['id']?>"> Удалить</a></td>
+                <td><a href="edit.php?id=<?=$for['id']?>">Ред</a><a href="del.php?id=<?=$for['id']?>"> Удалить</a></td>
               </tr>
               <?endforeach?>
             </tbody>

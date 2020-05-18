@@ -2,21 +2,42 @@
 <html lang="ru">
 <head>
   <?
+
   require_once "Db.php";
    $db = DataBase::getDB();
-    if(isset($_POST['name_'])){
-      $name = $db->escape($_POST['name_']);
-      $pic= $db->escape($_POST['pik_link']);
-      $text = $db->escape($_POST['out_text']);
-      $link = $db->escape($_POST['link']);
-      $query_send = "INSERT INTO graph (name,pic_link,out_text,link) VALUES ('$name','$pic','$text','$link')";
-      if($db->query($query_send)){
-        echo "Запись добавлена";
-      }else{
-        echo "Ошибка: ";
-      }
-     
+   if(isset($_GET['id'])){
+
+    $ide = $db->escape($_GET['id']);
+    if($ide>0){
+      $query_article = "SELECT * FROM graph WHERE id='{$ide}'";
+      $articles = $db->select($query_article);
+      $article = $articles[0];
+    }else{
+      $article = [];
+      $article['id'] = $ide;
+      $article['name'] ='';
+      $article['out_text'] =' ';
+      $article['link'] =' ';
+      $article['pic_link'] =' ';
+
     }
+
+   }
+
+   if(isset($_POST['name_'])){
+    $name = $db->escape($_POST['name_']);
+    $pic= $db->escape($_POST['pik_link']);
+    $text = $db->escape($_POST['out_text']);
+    $link = $db->escape($_POST['link']);
+    $query_send = "INSERT INTO graph (name,pic_link,out_text,link) VALUES ('$name','$pic','$text','$link')";
+    if($db->query($query_send)){
+      echo "Запись добавлена";
+    }else{
+      echo "Ошибка: ";
+    }
+   
+  }
+    
   ?>
 	<meta charset="UTF-8">
   <title>Делаем открытки </title>
@@ -61,17 +82,17 @@
           <form name="edit_image" action="edit.php" method="POST">
             <div class="form-group">
               <label for="exampleInputEmail1">Имя записи</label>
-              <input type="text" name="name_" class="form-control"  aria-describedby="emailHelp">
+              <input type="text" name="name_" class="form-control"  aria-describedby="emailHelp" value="<?=$article['name']?>">
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Текст</label>
-              <input type="text" name="out_text" class="form-control"  aria-describedby="emailHelp">
+              <input type="text" name="out_text" class="form-control"  aria-describedby="emailHelp" value="<?=$article['out_text']?>">
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
               <label for="exampleInputEmail1">Ссылка</label>
-              <input type="text" name="link" class="form-control"  aria-describedby="emailHelp">
+              <input type="text" name="link" class="form-control"  aria-describedby="emailHelp" value="<?=$article['link']?>">
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
             <div class="form-group">
@@ -80,12 +101,16 @@
               ?>
               <label for="exampleFormControlSelect2">Example multiple select</label>
               <select multiple class="form-control" name="pik_link">
-                <?foreach ($imagedirectory as $img):?>
-                <option value="<?=$img?>"><?=$img?></option>
-                 <?endforeach?>
+                  <?foreach ($imagedirectory as $img):?>
+                    <?if($img == $article['pic_link']):?>
+                    <option value="<?=$img?>" selected="selected"><?=$img?></option>  
+                      <?else:?>
+                    <option value="<?=$img?>"><?=$img?></option>  
+                   <?endif;?>
+                  <?endforeach;?>
               </select>
             </div>
-            <button type="submit" class="btn btn-primary my-4">Submit</button>
+            <button type="submit" class="btn btn-primary my-4">Submit</button>       
           </form>
         </div>
       </div>
