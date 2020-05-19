@@ -1,18 +1,24 @@
-<?
-  require_once "Db.php";
-   $db = DataBase::getDB();
-      $name = $db->escape($_POST['name_']);
-      $pic= $db->escape($_POST['pik_link']);
-      $text = $db->escape($_POST['out_text']);
-      $link = $db->escape($_POST['link']);
-      $query_article = "SELECT * FROM graph";
-      $article = $db->select($query_article);
-  ?>
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
+  <?
+ if(isset($_FILES['bgimg'])){
+    if($_FILES['bgimg']['type'] != 'image/jpeg'){
+      echo "Для фона загрузите jpeg";
+    }else{
+      $bgimg = $_FILES['bgimg']['name'];
+      move_uploaded_file($_FILES['bgimg']['tmp_name'], 'img/'.$bgimg);
+      echo "файл загружен";
+      echo "<br/>";
+      echo "Хотите <a href='/'>венуться</a> к списку?";
+
+    }
+
+ }
+   
+    
+  ?>
+	<meta charset="UTF-8">
   <title>Делаем открытки </title>
   <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:300,400,700&amp;subset=cyrillic-ext" rel="stylesheet">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -48,46 +54,27 @@
     </div>
   </div>
 </header>
-<body class="first-color">
+  <body class="first-color">
     <div class="main ">
       <div class="container " id="about"> 
         <div class="shadow-sm">
-          <div class="row justify-content-around">
-            <form name="creat_image col-6" action="edit.php" method="GET">
-                <input type="hidden" name="id" value="-1">
-              <button type="submit" class="btn btn-primary my-4">Создать</button>
-            </form>
-            <form name="creat_image col-6" action="upload.php" method="GET">
-                <input type="hidden" name="id" >
-              <button type="submit" class="btn btn-primary my-4">Добавить</button>
-            </form>
-          </div>
-        <table class="table" border="1">
-            <thead>
-              <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Низвание</th>
-                <th scope="col">Текст</th>
-                <th scope="col">Фон</th>
-                <th scope="col">Ссылка</th>
-                <th scope="col">*</th>
-              </tr>
-            </thead>
-            <tbody>
-              <?foreach($article as $for):?>
-              <tr>
-                <th scope="row"><?=$for['id']?></th>
-                <td><?=$for['name']?></td>
-                <td><?=$for['out_text']?></td>
-                <td > <img style="max-height:200px; max-width: 300px;" src="img/<?=$for['pic_link']?>" alt=""></td>
-                <td ><a href="imageShow.php?id=<?=$for['id']?>" target="_balnk">Просмотр</a></td>
-                <td><a href="edit.php?id=<?=$for['id']?>">Ред</a><a href="del.php?id=<?=$for['id']?>"> Удалить</a></td>
-              </tr>
-              <?endforeach?>
-            </tbody>
-          </table>
+          <form name="upload_file"  method="POST" enctype="multipart/form-data">
+          <div class="input-group">
+            <div class="custom-file">
+              <input type="file" class="custom-file-input" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" name="bgimg">
+              <label class="custom-file-label" for="inputGroupFile04">Выберите файл</label>
+                </div>
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary" type="submit" id="inputGroupFileAddon04">Загрузить</button>
+                </div>
+             </div>   
+          </form>
         </div>
       </div>
     </div>
   </body>
 </html>
+
+<?
+exit;
+?>

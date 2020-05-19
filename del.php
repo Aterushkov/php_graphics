@@ -73,3 +73,8 @@
   </body>
 </html>
 
+<?
+$user_id = mysqli_fetch_assoc($_GET['user']);
+print_r($user_id );
+print_r($user);
+?>

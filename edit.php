@@ -2,7 +2,8 @@
 <html lang="ru">
 <head>
   <?
-
+  $id = 0;
+  
   require_once "Db.php";
    $db = DataBase::getDB();
    if(isset($_GET['id'])){
@@ -19,24 +20,45 @@
       $article['out_text'] =' ';
       $article['link'] =' ';
       $article['pic_link'] =' ';
-
     }
 
    }
 
-   if(isset($_POST['name_'])){
-    $name = $db->escape($_POST['name_']);
-    $pic= $db->escape($_POST['pik_link']);
-    $text = $db->escape($_POST['out_text']);
-    $link = $db->escape($_POST['link']);
-    $query_send = "INSERT INTO graph (name,pic_link,out_text,link) VALUES ('$name','$pic','$text','$link')";
-    if($db->query($query_send)){
-      echo "Запись добавлена";
+
+   if(isset($_POST['save'])){
+    if($_POST['id'] < 0){
+      $name = $db->escape($_POST['name_']);
+      $pic= $db->escape($_POST['pik_link']);
+      $text = $db->escape($_POST['out_text']);
+      $link = $db->escape($_POST['link']);
+      $query_send = "INSERT INTO graph (name,pic_link,out_text,link) VALUES ('$name','$pic','$text','$link')";
+      if($db->query($query_send)){
+        echo "Запись добавлена";
+        echo "<br/>";
+        echo "Хотите <a href='/'>венуться</a> к списку?";
+      }else{
+        echo "Ошибка: ";
+      }
+     
     }else{
-      echo "Ошибка: ";
+      $id = $db->escape($_POST['id']);
+      $name = $db->escape($_POST['name_']);
+      $pic= $db->escape($_POST['pik_link']);
+      $text = $db->escape($_POST['out_text']);
+      $link = $db->escape($_POST['link']);
+      $query_send = "UPDATE graph SET name ='$name',pic_link ='$pic',out_text='$text',link='$link' WHERE id='{$id}'";
+      if($db->query($query_send)){
+        echo "Запись изменена";
+        echo "<br/>";
+        echo "Хотите <a href='/'>венуться</a> к списку?";
+      }else{
+        echo "Ошибкаz: ";
+        
+      }
+      
     }
+   }
    
-  }
     
   ?>
 	<meta charset="UTF-8">
@@ -82,6 +104,7 @@
           <form name="edit_image" action="edit.php" method="POST">
             <div class="form-group">
               <label for="exampleInputEmail1">Имя записи</label>
+              <input type="hidden" name="id" class="form-control"  aria-describedby="emailHelp" value="<?=$article['id']?>">
               <input type="text" name="name_" class="form-control"  aria-describedby="emailHelp" value="<?=$article['name']?>">
               <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
             </div>
@@ -110,10 +133,11 @@
                   <?endforeach;?>
               </select>
             </div>
-            <button type="submit" class="btn btn-primary my-4">Submit</button>       
+            <button type="submit" name="save" class="btn btn-primary my-4">Submit</button>       
           </form>
         </div>
       </div>
     </div>
   </body>
 </html>
+
